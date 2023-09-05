@@ -6,6 +6,7 @@ import { getStates } from "../../lib/enums"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from '../api/auth/[...nextauth]';
 
+
 const EditVolunteerAccount = (props) => {
     const volunteerAccount = props.account ? JSON.parse(props.account): null
     const error = props.error ? props.error: null
@@ -30,8 +31,9 @@ const EditVolunteerAccount = (props) => {
             const data = {
                 email: email,
                 location: location,
+                alp_id: volunteerAccount.alp_id,
             }
-            const resJson = await fetch(`/api/volunteeraccounts/${volunteerAccount.email}`, {
+            const resJson = await fetch(`/api/volunteeraccounts/`, {
                 method: "PATCH",
                 body: JSON.stringify(data),
             }).then(res => res.json())
@@ -43,9 +45,11 @@ const EditVolunteerAccount = (props) => {
     }
     if (!isEdited)
         return (
-            <div>
+            <div style={{display: "flex", flexDirection: "column", justifyContent: "space-around", alignItems: "center", height: "100%", width: "100%", margin: 50}}>
                 {volunteerAccount &&
                     <div>
+                        <p>current email: {volunteerAccount.email}</p>
+                        <p>current location: {states[volunteerAccount.location-1].name}</p>
                         <p>Update your email</p>
                         <input type="text" value={email} onChange={handleEmailChange} />
                         <br></br>
@@ -63,7 +67,7 @@ const EditVolunteerAccount = (props) => {
                     </div>
                 }
                 {error &&
-                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "100px", flexDirection: "column" }}>
+                    <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center", width:"100%", height: "100%", padding: "100px", flexDirection: "column" }}>
                         <h1>{error}</h1>
                         {// when the error is not auth error, give them the option to go back
                         error !== "You must login before accessing this page" &&
