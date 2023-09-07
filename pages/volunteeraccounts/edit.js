@@ -8,7 +8,7 @@ import { authOptions } from '../api/auth/[...nextauth]';
 
 
 const EditVolunteerAccount = (props) => {
-    const volunteerAccount = props.account ? JSON.parse(props.account): null
+    const volunteerAccount = props.volunteerAccount ? JSON.parse(props.volunteerAccount): null
     const error = props.error ? props.error: null
     const states = getStates()
     
@@ -105,13 +105,13 @@ export const getServerSideProps = async (context) => {
         }
         const email = session.user.email
         console.log(session.user)
-        const VolunteerAccount = getVolunteerAccountModel()
-        const volunteerAccount = await VolunteerAccount.findOne({ email: email })
-        return { props: { account: JSON.stringify(volunteerAccount), error: null } }
+        const VolunteerAccountModel = getVolunteerAccountModel()
+        const volunteerAccount = await VolunteerAccountModel.findOne({ email: email })
+        return { props: { volunteerAccount: JSON.stringify(volunteerAccount), error: null } }
     } catch (e) {
         console.error(e)
         let strError = e.message === "Cannot read properties of null (reading 'user')" ? "You must login before accessing this page" : `${e}`
-        return { props: { account: null, alp_id: null, error: strError } }
+        return { props: { volunteerAccount: null, error: strError } }
     }
 }
 export default EditVolunteerAccount

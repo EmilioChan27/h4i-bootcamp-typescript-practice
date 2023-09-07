@@ -4,17 +4,17 @@ import getVolunteerAccountModel from '../../../models/VolunteerAccount'
 // right now a lot of the data is hard-coded
 export default async function handler(req, res) {
     await dbConnect()
-    const VolunteerAccount = getVolunteerAccountModel()
+    const VolunteerAccountModel = getVolunteerAccountModel()
     switch (req.method) {
         case 'POST':
             try {
                 var maxAlpId
-                await VolunteerAccount.findOne().sort('-alp_id').then(account => {
+                await VolunteerAccountModel.findOne().sort('-alp_id').then(account => {
                     maxAlpId = account.alp_id
                 })
                 console.log(maxAlpId)
                 const {email, password, fname, lname, location} = JSON.parse(req.body)
-                const newVolunteerAccount = new VolunteerAccount({
+                const newVolunteerAccount = new VolunteerAccountModel({
                     fname: fname,
                     lname: lname,
                     alp_id: maxAlpId+1,
@@ -36,7 +36,7 @@ export default async function handler(req, res) {
         case 'PATCH':
             try {
                const {alp_id, email, location} = JSON.parse(req.body)
-               const modifiedVolunteerAccount = await VolunteerAccount.findOneAndUpdate(
+               const modifiedVolunteerAccount = await VolunteerAccountModel.findOneAndUpdate(
                 {alp_id: alp_id}, 
                 {email: email, location: location}, {
                     new: true,
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
         case 'DELETE':
             try {
                 const {alp_id} = JSON.parse(req.body)
-                const account = await VolunteerAccount.delete({alp_id: alp_id})
+                const account = await VolunteerAccountModel.delete({alp_id: alp_id})
                 const deletedVolunteerAccount = await account.save()
                 res.status(200).json({success: true, data: deletedVolunteerAccount})
                 break
@@ -63,9 +63,8 @@ export default async function handler(req, res) {
         case 'GET':
             try {
                 const email = req.query.email
-                const volunteerAccount = await VolunteerAccount.findOne({email: email})
+                const volunteerAccount = await VolunteerAccountModel.findOne({email: email})
                 console.log(volunteerAccount)
-                if (volunteerAccount == []) console.log("COME ON")
                 res.status(200).json({success: true, data: volunteerAccount})
                 break
             } catch (error) {
